@@ -1315,9 +1315,10 @@ function saveLiked() { try { localStorage.setItem('gm-liked', JSON.stringify(lik
 /* ===== wall ===== */
 const wall = document.getElementById('wall');
 let filter = 'all';
+const isAV = s => (s.kind === 'video' || s.kind === 'song') ? 1 : 0;
 function visible() {
   return SUBMISSIONS.filter(s => filter === 'all' ? true : filter === 'featured' ? s.featured : filter === 'image' ? s.kind === 'image' || s.kind === 'pending' : s.kind === 'video' || s.kind === 'song')
-    .sort((a, b) => (b.featured - a.featured) || a.id - b.id);
+    .sort((a, b) => (b.featured - a.featured) || (isAV(b) - isAV(a)) || a.id - b.id);
 }
 function perShelf() {
   const w = wall.clientWidth || 1000;
