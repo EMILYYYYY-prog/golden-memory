@@ -219,6 +219,36 @@ body.locked { overflow: hidden; }
 .bgm-btn:not(.off) .note { animation: bob 2.4s ease-in-out infinite; }
 @keyframes bob { 50% { translate: 0 -2px; } }
 @media (prefers-reduced-motion: reduce) { .bgm-btn .note { animation: none !important; } }
+/* ---- small screens ---- */
+@media (max-width: 700px) {
+  .show { padding-top: calc(12px + env(safe-area-inset-top, 0px)); padding-bottom: calc(12px + env(safe-area-inset-bottom, 0px)); gap: 10px; }
+  .show-stage { grid-template-columns: 1fr; align-content: start; gap: 12px; overflow-y: auto; min-height: 0; }
+  .show-art { width: auto !important; height: 32vh; max-height: 32vh; max-width: 100%; aspect-ratio: 4 / 3; justify-self: center; }
+  .show-text { gap: 8px; }
+  .show-text h2 { font-size: 26px; }
+  .show-text p, .show-text.long p, .show-text.xlong p { font-size: 15px; line-height: 1.7; max-height: none; overflow: visible; }
+  .show-text .subt { font-size: 15px; }
+  .show-bot { gap: 8px; }
+  .ctl { gap: 6px; flex-wrap: nowrap; }
+  .ctl button { padding: 7px 11px; font-size: 13px; white-space: nowrap; }
+  .bgm-btn { width: 40px; height: 40px; font-size: 18px; }
+  .who span { font-size: 11px; }
+}
+@media (max-height: 720px) {
+  .intro { overflow-y: auto; align-items: start; }
+  .intro-in { gap: 8px; margin: auto 0; }
+  .orb-wrap { --s: min(40vw, 22vh, 240px); }
+  .big-orb { margin: 8px 0 4px; }
+  .intro h2 { font-size: clamp(30px, 6.2vh, 68px); }
+  .intro p { font-size: 15px; }
+  .enter { padding: 12px 28px; font-size: 16px; margin-top: 4px; }
+}
+@media (max-width: 380px) {
+  .eyebrow { letter-spacing: .12em; font-size: 11px; }
+  .chip { padding: 6px 12px; font-size: 13px; }
+  .play { padding: 9px 16px; font-size: 14px; }
+}
+
 /* intro animation */
 #introFx { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; }
 .intro-in { position: relative; z-index: 1; }
@@ -1417,6 +1447,7 @@ function openCard(s) {
   const lk = document.getElementById('dLink'); lk.hidden = !s.link; if (s.link) lk.href = s.link;
   syncHeart();
   dlg.showModal();
+  dlg.scrollTop = 0; document.getElementById('dClose').focus({ preventScroll: true });
 }
 function syncHeart() {
   const h = document.getElementById('dHeart'), on = !!liked[current.id];
