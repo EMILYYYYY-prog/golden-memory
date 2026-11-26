@@ -7,8 +7,8 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@1,9..144,600;1,9..144,800&family=Noto+Sans+TC:wght@400;500;700;900&display=swap">
 <style>
-html, body { margin: 0; overflow-x: hidden; } img { max-width: 100%; }
-.wall { overflow-x: clip; }
+html, body { margin: 0; } body { overflow-x: clip; } img { max-width: 100%; }
+.wall { overflow: hidden; }
 @media (max-width: 700px) { .card .art { aspect-ratio: auto !important; height: 42vh; min-height: 0; } dialog { width: calc(100% - 24px); max-height: calc(100% - 24px); } .show-top span { font-size: 12px; text-align: right; } .show-top img { width: 96px; } }
 :root { padding-top: env(safe-area-inset-top, 0px); padding-bottom: env(safe-area-inset-bottom, 0px); }
 /* Layout: Inside-Out style memory shelves — every submission is a glowing golden orb; click to open its story; play mode for the 11/25 sharing session. Single dark look by design (projected on screen). */
@@ -36,12 +36,13 @@ body {
   font-size: 15px;
   line-height: 1.6;
   min-height: 100%;
+}
+body::before { content: ""; position: fixed; inset: 0; z-index: -1; pointer-events: none;
   background-image:
     radial-gradient(ellipse 70% 40% at 50% 0%, rgba(255, 196, 90, .22), transparent 70%),
     radial-gradient(ellipse at 0% 100%, rgba(240, 69, 140, .20), transparent 55%),
     radial-gradient(ellipse at 100% 60%, rgba(140, 90, 220, .30), transparent 55%),
     linear-gradient(180deg, #2a1646 0%, #4a2367 55%, #5e2c73 100%);
-  background-attachment: fixed;
 }
 .wrap { max-width: 1120px; margin: 0 auto; padding-block: 28px 64px; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
 #sky { position: fixed; inset: 0; z-index: 0; pointer-events: none; }
@@ -232,9 +233,11 @@ body.locked { overflow: hidden; }
   .show-bot { gap: 8px; }
   .ctl { gap: 6px; flex-wrap: nowrap; }
   .ctl button { padding: 7px 11px; font-size: 13px; white-space: nowrap; }
-  .bgm-btn { width: 40px; height: 40px; font-size: 18px; }
+  .bgm-btn { width: 38px; height: 38px; font-size: 17px; opacity: .92; }
   .who span { font-size: 11px; }
 }
+.shelf, .rack { min-width: 0; }
+@media (max-width: 560px) { .row, .labels { gap: 12px; padding-left: 2px; padding-right: 2px; } }
 @media (max-height: 720px) {
   .intro { overflow-y: auto; align-items: start; }
   .intro-in { gap: 8px; margin: auto 0; }
