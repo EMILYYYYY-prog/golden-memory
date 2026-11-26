@@ -76,7 +76,8 @@ button:focus-visible { outline: 3px solid var(--pink); outline-offset: 3px; }
 .wall > .plaque:first-child { margin-top: 0; }
 .plaque.gold h3 { color: var(--gold); text-shadow: 0 0 18px rgba(255, 207, 74, .5); font-size: 22px; }
 .shelf.gold .ledge { background: linear-gradient(180deg, #fff6cf 0%, #ffd75a 35%, #d89a1c 75%, #8a5606 100%); box-shadow: 0 18px 30px rgba(10, 0, 30, .55), 0 -10px 40px rgba(255, 207, 74, .45); }
-.shelf.gold { padding-bottom: 10px; border-bottom: 1px dashed rgba(255, 207, 74, .25); }
+.shelf.gold { padding-bottom: 4px; }
+.wall > .shelf.gold + .plaque { border-top: 1px dashed rgba(255, 207, 74, .3); padding-top: 26px; margin-top: 6px; }
 .rack { padding: 34px 0 0; }
 .row { display: flex; gap: 30px; align-items: flex-end; justify-content: center; padding: 0 18px; }
 .ledge { height: 22px; margin-top: -2px; border-radius: 6px 6px 14px 14px;
@@ -1360,7 +1361,7 @@ function visible() {
 function perShelf() {
   const w = wall.clientWidth || 1000;
   const unit = w < 560 ? 110 : 158;
-  return Math.max(2, Math.min(7, Math.floor((w - 36) / unit)));
+  return Math.max(2, Math.min(7, Math.floor((w - (w < 560 ? 12 : 36)) / unit)));
 }
 function renderWall() {
   wall.innerHTML = '';
@@ -1383,8 +1384,11 @@ function renderWall() {
   });
 }
 function addShelves(list, n, base, gold) {
-  for (let k = 0; k < list.length; k += n) {
-    const items = list.slice(k, k + n);
+  /* split evenly, smaller rows on top (e.g. 7 → 3 + 4) */
+  const rows = Math.ceil(list.length / n), small = Math.floor(list.length / rows), extra = list.length % rows;
+  const chunks = []; let at = 0;
+  for (let r = 0; r < rows; r++) { const size = small + (r >= rows - extra ? 1 : 0); chunks.push(list.slice(at, at + size)); at += size; }
+  chunks.forEach((items, ri) => {
     const shelf = document.createElement('div'); shelf.className = 'shelf' + (gold ? ' gold' : '');
     const rack = document.createElement('div'); rack.className = 'rack';
     const row = document.createElement('div'); row.className = 'row';
@@ -1393,7 +1397,7 @@ function addShelves(list, n, base, gold) {
       const b = document.createElement('button');
       b.className = 'memory roll' + (s.featured ? ' featured' : '');
       b.setAttribute('aria-label', `${s.name}（${metaOf(s)}）的作品`);
-      const shelfNo = base + k / n, dir = shelfNo % 2 ? -1 : 1, pos = dir > 0 ? items.length - 1 - items.indexOf(s) : items.indexOf(s);
+      const shelfNo = base + ri, dir = shelfNo % 2 ? -1 : 1, pos = dir > 0 ? items.length - 1 - items.indexOf(s) : items.indexOf(s);
       const delay = (shelfNo * .35 + pos * .13).toFixed(2) + 's';
       b.style.setProperty('--dir', dir); b.style.setProperty('--delay', delay);
       b.addEventListener('animationend', e => { if (e.animationName === 'rollIn') b.classList.remove('roll'); if (e.animationName === 'wiggle') b.classList.remove('wiggle'); });
@@ -1418,8 +1422,8 @@ function addShelves(list, n, base, gold) {
     rack.append(row, ledge, labels);
     shelf.append(rack);
     wall.appendChild(shelf);
-  }
-  return base + Math.ceil(list.length / n);
+  });
+  return base + rows;
 }
 let lastN = 0;
 setInterval(() => {
